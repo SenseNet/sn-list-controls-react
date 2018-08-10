@@ -18,7 +18,8 @@
         "dist"
     ],
     "compileOnSave": false,
-    "files": [
-        "src/index.ts"
+    "references": [
+        {"path": "./src/ExampleApp"},
+        {"path": "./src/Tests"}
     ]
 }

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "composite": true,
+    },
+    "files": [
+        "./index.ts"
+    ],
+    "references": [
+        
+    ]
+}

@@ -9,7 +9,7 @@ export class ExampleAppLayout extends React.Component {
      */
     public render() {
         return (<div style={{ height: '100%' }}>
-            Example Application E
+            Showcase application for list controls
         </div>)
     }
 }
