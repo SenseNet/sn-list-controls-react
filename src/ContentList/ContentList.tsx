@@ -105,7 +105,16 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
                         key={item.Id}
                         hover
                         selected={this.props.active && this.props.active.Id === item.Id ? true : false}
-                        onClick={() => this.props.onRequestActiveItemChange && this.props.onRequestActiveItemChange(item)}>
+                        onClick={(e) => {
+                            this.props.onRequestActiveItemChange && this.props.onRequestActiveItemChange(item)
+                            this.props.onItemClick && this.props.onItemClick(e, item)
+                        }}
+                        onDoubleClick={(e) => {
+                            this.props.onItemDoubleClick && this.props.onItemDoubleClick(e, item)
+                        }}
+                        onTouchEnd={(e) => this.props.onItemTap && this.props.onItemTap(e, item)}
+                        onContextMenu={(e) => this.props.onItemContextMenu && this.props.onItemContextMenu(e, item)}
+                    >
                         <TableCell padding="checkbox" key="select">
                             <Checkbox
                                 checked={this.props.selected.find((i) => i.Id === item.Id) ? true : false}
