@@ -1,6 +1,8 @@
 import { Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip } from '@material-ui/core'
-import { GenericContent, IActionModel, Schema} from '@sensenet/default-content-types'
+import { GenericContent, IActionModel, Schema } from '@sensenet/default-content-types'
 import * as React from 'react'
+
+export type listFieldMapping<T extends GenericContent, K extends keyof T> = (field: K, content: T) => React.StatelessComponent<ContentListProps<T>>
 
 export interface ContentListProps<T extends GenericContent> {
     items: T[]
@@ -10,6 +12,7 @@ export interface ContentListProps<T extends GenericContent> {
     fieldsToDisplay: Array<keyof T>
     orderBy: keyof T
     orderDirection: 'asc' | 'desc'
+    fieldComponent: listFieldMapping<T, keyof T>,
     onItemClick?: (e: React.MouseEvent, content: GenericContent) => void
     onItemDoubleClick?: (e: React.MouseEvent, content: GenericContent) => void
     onItemTap?: (e: React.SyntheticEvent, content: GenericContent) => void
@@ -67,7 +70,7 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
         return <Table>
             <TableHead>
                 <TableRow>
-                    <TableCell padding="checkbox" key="selectAll">
+                    <TableCell padding="checkbox" key="selectAll" style={{ width: '30px', paddingRight: 0 }}>
                         <Checkbox
                             indeterminate={this.state.hasSelected && !this.state.isAllSelected}
                             checked={this.state.isAllSelected}
@@ -80,38 +83,44 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
                         const description = fieldSetting && fieldSetting.Description || field
                         const displayName = fieldSetting && fieldSetting.DisplayName || field
                         return (<TableCell
-                                key={field as string}
-                                numeric={isNumeric}
-                            >
-                                <Tooltip title={description} >
-                                    <TableSortLabel
-                                        active={this.props.orderBy === field}
-                                        direction={this.props.orderDirection}
-                                        onClick={() => this.props.onRequestOrderChange && this.props.onRequestOrderChange(field, this.props.orderDirection === 'asc' ? 'desc' : 'asc')}
-                                        >
-                                        {displayName}
-                                    </TableSortLabel>
-                                </Tooltip>
+                            key={field as string}
+                            numeric={isNumeric}
+                        >
+                            <Tooltip title={description} >
+                                <TableSortLabel
+                                    active={this.props.orderBy === field}
+                                    direction={this.props.orderDirection}
+                                    onClick={() => this.props.onRequestOrderChange && this.props.onRequestOrderChange(field, this.props.orderDirection === 'asc' ? 'desc' : 'asc')}
+                                >
+                                    {displayName}
+                                </TableSortLabel>
+                            </Tooltip>
                         </TableCell>)
                     })}
                 </TableRow>
             </TableHead>
             <TableBody>
                 {this.props.items.map((item) => {
-                    return (<TableRow key={item.Id}>
+                    return (<TableRow
+                        key={item.Id}
+                        hover
+                        selected={this.props.active && this.props.active.Id === item.Id ? true : false}
+                        onClick={() => this.props.onRequestActiveItemChange && this.props.onRequestActiveItemChange(item)}>
                         <TableCell padding="checkbox" key="select">
                             <Checkbox
                                 checked={this.props.selected.find((i) => i.Id === item.Id) ? true : false}
                                 onChange={() => this.handleContentSelection(item)}
-                                />
+                            />
                         </TableCell>
                         {this.props.fieldsToDisplay.map((field) => {
-                            return (<TableCell key={field.toString()}>
-                                {item[field]}
-                            </TableCell>)
+                            const el = {
+                                ...React.createElement(this.props.fieldComponent(field, item), this.props),
+                                key: field as string,
+                            }
+                            return el
                         })}
                     </TableRow>
-    )
+                    )
                 })}
             </TableBody>
         </Table>

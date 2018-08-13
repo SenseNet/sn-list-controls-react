@@ -24,52 +24,52 @@ export class ExampleAppLayout extends React.Component<{}, ExampleAppState> {
     }
 
     public closeDrawer() {
-        this.setState({isDrawerOpened: false})
+        this.setState({ isDrawerOpened: false })
     }
     /**
      * renders the component
      */
     public render() {
         return (<HashRouter>
-        <div>
-            <AppBar position="static">
-        <Toolbar>
-          <IconButton color="inherit" aria-label="Menu">
-            <Menu onClick={() => {this.setState({...this.state, isDrawerOpened: !this.state.isDrawerOpened})}} />
-          </IconButton>
-          <Typography variant="title" color="inherit">
-            list-controls-react showcase
+            <div>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton color="inherit" aria-label="Menu">
+                            <Menu onClick={() => { this.setState({ ...this.state, isDrawerOpened: !this.state.isDrawerOpened }) }} />
+                        </IconButton>
+                        <Typography variant="title" color="inherit">
+                            list-controls-react showcase
           </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="temporary" open={this.state.isDrawerOpened} onClose={this.closeDrawer}>
-            <List>
-            <Link to="/" onClick={this.closeDrawer}>
-                    <ListItem>
-                        <ListItemIcon><Home/></ListItemIcon>
-                        <ListItemText primary="Home" secondary="Return to the starting screen of the showcase application"/>
+                    </Toolbar>
+                </AppBar>
+                <Drawer variant="temporary" open={this.state.isDrawerOpened} onClose={this.closeDrawer}>
+                    <List>
+                        <Link to="/" onClick={this.closeDrawer}>
+                            <ListItem>
+                                <ListItemIcon><Home /></ListItemIcon>
+                                <ListItemText primary="Home" secondary="Return to the starting screen of the showcase application" />
 
-                    </ListItem>
-                </Link>
+                            </ListItem>
+                        </Link>
 
-                <Link to="/contentlist" onClick={this.closeDrawer}>
-                    <ListItem>
-                        <ListItemIcon><ListIcon/></ListItemIcon>
-                        <ListItemText primary="ContentList" secondary="Control for displaying a list of content"/>
+                        <Link to="/contentlist" onClick={this.closeDrawer}>
+                            <ListItem>
+                                <ListItemIcon><ListIcon /></ListItemIcon>
+                                <ListItemText primary="ContentList" secondary="Control for displaying a list of content" />
 
-                    </ListItem>
-                </Link>
-            </List>
-      </Drawer>
-      <div className="content">
-            <Switch>
-                <Route exact path="/contentlist" component={ContentListDemo} />
-            </Switch>
-            <Switch>
-                <Route exact path="/" component={() => <div>Welcome</div>} />
-            </Switch>
-      </div>
-      </div>
-      </HashRouter>)
+                            </ListItem>
+                        </Link>
+                    </List>
+                </Drawer>
+                <div className="content">
+                    <Switch>
+                        <Route exact path="/contentlist" component={ContentListDemo} />
+                    </Switch>
+                    <Switch>
+                        <Route exact path="/" component={() => <div>Welcome</div>} />
+                    </Switch>
+                </div>
+            </div>
+        </HashRouter>)
     }
 }
