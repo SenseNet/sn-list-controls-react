@@ -1,6 +1,6 @@
 {
   "name": "@sensenet/list-controls-react",
-  "version": "1.0.0-development.1",
+  "version": "1.0.0-development.3",
   "description": "",
   "main": "dist/ContentList/index.js",
   "files": [
@@ -16,14 +16,14 @@
   "scripts": {
     "precommit": "npm run test",
     "commit": "git-cz",
-    "pretest": "rimraf dist && tsc -p tsconfig.json",
+    "pretest": "rimraf dist && tsc --build tsconfig.json",
     "test": "rimraf coverage && nyc mocha -p tsconfig.json ./dist/Tests/index.js",
     "check-coverage": "istanbul check-coverage ",
     "report-coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/codecov",
     "semantic-release": "semantic-release pre && semantic-release post",
     "tslint": "tslint --project tsconfig.json",
     "prebuild": "npm run tslint",
-    "build": "rimraf dist && rimraf bundle && tsc -p tsconfig.json && webpack",
+    "build": "rimraf dist && rimraf bundle && tsc --build tsconfig.json && webpack",
     "publish:development": "npm run build && npm t && npm run typedoc && npm publish --tag development",
     "prepublishOnly": "npm run test && npm run build",
     "typedoc": "typedoc --mode file --out documentation src --tsconfig tsconfig.json --theme c:/Users/%USERNAME%/AppData/Roaming/npm/node_modules/@sensenet/typedoc-theme/sn-theme",
@@ -85,9 +85,11 @@
     "@material-ui/core": "^1.5.0",
     "@material-ui/icons": "^1.1.0",
     "@sensenet/default-content-types": "^1.1.0",
+    "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-fontawesome": "^1.6.1",
+    "react-moment": "^0.7.9",
     "react-test-renderer": "^16.4.2",
     "uuid": "^3.3.2"
   },
