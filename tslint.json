@@ -14,12 +14,6 @@
             true,
             "allow-fast-null-checks"
         ],
-        "variable-name": [
-            true,
-            "allow-leading-underscore",
-            "ban-keywords",
-            "check-format"
-        ],
         // "completed-docs": [
         //     true,
         //     {
