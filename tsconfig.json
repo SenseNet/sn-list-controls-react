@@ -1,24 +1,26 @@
 {
     "compilerOptions": {
         "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "noUnusedLocals": true,
         "target": "es2015",
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
         "declaration": true,
-        "preserveConstEnums": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "rootDir": "./src",
         "outDir": "./dist",
+        "rootDir": "./src",
         "jsx": "react"
     },
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
+    ],
     "exclude": [
         "node_modules",
-        "dist"
     ],
-    "compileOnSave": false,
     "references": [
         {
             "path": "./src/ContentList"
