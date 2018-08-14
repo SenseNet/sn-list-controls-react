@@ -11,33 +11,30 @@ export class ContentListDemo extends React.Component<{}, ContentListDemoState> {
 
     public state: ContentListDemoState = {
         items: [
-            { Id: 1, Path: '/Root/Examples/Foo', Type: 'Folder', Name: 'Foo', DisplayName: 'FoOoOo' },
-            { Id: 2, Path: '/Root/Examples/Bar', Type: 'Folder', Name: 'Bar', DisplayName: 'Bár' },
-            { Id: 3, Path: '/Root/Examples/Baz', Type: 'Folder', Name: 'Baz', DisplayName: 'Z Baz' },
+            { Id: 1, Path: '/Root/Examples/Foo', Type: 'Folder', Name: 'Foo', DisplayName: 'FoOoOo', Icon: 'file' },
+            { Id: 2, Path: '/Root/Examples/Bar', Type: 'Folder', Name: 'Bar', DisplayName: 'Bár', Icon: 'Settings' },
+            { Id: 3, Path: '/Root/Examples/Baz', Type: 'Folder', Name: 'Baz', DisplayName: 'Z Baz', Icon: 'File' },
         ],
         schema: SchemaStore.filter((s) => s.ContentTypeName === 'GenericContent')[0],
         selected: [],
+        icons: {file: 'insert_drive_file', settings: 'settings'},
         fieldsToDisplay: ['DisplayName', 'Name', 'Type', 'Id'],
         orderBy: 'Id',
         orderDirection: 'asc',
         isEditing: false,
-        fieldComponent: (field, content) => (_props) => {
-            switch (field) {
+        fieldComponent: (props) => {
+            switch (props.field) {
                 case 'DisplayName':
                     if (this.state.isEditing) {
-                        return (<TableCell><TextField defaultValue={content[field]} onChange={(ev) => content[field] = ev.currentTarget.value} /></TableCell>)
-                    } else {
-                        return (<TableCell>
-                            <span title={content.Description}>{content[field]} </span>
-                        </TableCell>)
+                        return (<TableCell><TextField defaultValue={props.content[props.field]} onChange={(ev) => props.content[props.field] = ev.currentTarget.value} /></TableCell>)
                     }
+                    break
                 case 'Name':
                     return (<TableCell>
-                        <Tooltip title={content.Path}><span>{content[field]} </span></Tooltip>
+                        <Tooltip title={props.content.Path}><span>{props.content[props.field]} </span></Tooltip>
                     </TableCell>)
-                default:
-                    return (<TableCell>{content[field]}</TableCell>)
             }
+            return null
         },
     }
 

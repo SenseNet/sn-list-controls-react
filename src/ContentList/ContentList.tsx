@@ -1,8 +1,7 @@
 import { Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip } from '@material-ui/core'
 import { GenericContent, IActionModel, Schema } from '@sensenet/default-content-types'
 import * as React from 'react'
-
-export type listFieldMapping<T extends GenericContent, K extends keyof T> = (field: K, content: T) => React.StatelessComponent<ContentListProps<T>>
+import { ActionsCell, CellProps, DateCell, DefaultCell, DisplayNameCell, ReferenceCell } from './CellTemplates'
 
 export interface ContentListProps<T extends GenericContent> {
     items: T[]
@@ -12,11 +11,13 @@ export interface ContentListProps<T extends GenericContent> {
     fieldsToDisplay: Array<keyof T>
     orderBy: keyof T
     orderDirection: 'asc' | 'desc'
-    fieldComponent: listFieldMapping<T, keyof T>,
-    onItemClick?: (e: React.MouseEvent, content: GenericContent) => void
-    onItemDoubleClick?: (e: React.MouseEvent, content: GenericContent) => void
-    onItemTap?: (e: React.SyntheticEvent, content: GenericContent) => void
-    onItemContextMenu?: (e: React.SyntheticEvent, content: GenericContent) => void
+    fieldComponent?: React.StatelessComponent<CellProps<T, keyof T>>,
+    icons: any
+    onItemClick?: (e: React.MouseEvent, content: T) => void
+    onItemDoubleClick?: (e: React.MouseEvent, content: T) => void
+    onItemTap?: (e: React.TouchEvent, content: T) => void
+    onItemContextMenu?: (e: React.MouseEvent, content: T) => void
+    onRequestActionsMenu?: (ev: React.MouseEvent, content: T) => void
     onRequestOrderChange?: (field: keyof T, direction: 'asc' | 'desc') => void
     onRequestSelectionChange?: (newSelection: T[]) => void
     onRequestActiveItemChange?: (newActiveItem: T) => void
@@ -61,6 +62,28 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
         }
     }
 
+    private defaultFieldComponents: React.StatelessComponent<CellProps<T, keyof T>> = (props: CellProps<T, keyof T>) => {
+        switch (props.field) {
+            case 'DisplayName':
+                return (<DisplayNameCell content={props.content} isSelected={props.isSelected} icons={this.props.icons}></DisplayNameCell>)
+            case 'Actions':
+                if (props.content.Actions && props.content.Actions instanceof Array) {
+                    return (<ActionsCell
+                        actions={props.content.Actions as IActionModel[]}
+                        content={props.content}
+                        openActionMenu={(ev) => this.props.onRequestActionsMenu && this.props.onRequestActionsMenu(ev, props.content)}></ActionsCell>)
+                }
+                break
+            case 'ModificationDate':
+                return <DateCell date={props.content.ModificationDate as string} />
+        }
+        const field: any = props.content[props.field]
+        if (field && field.Id && field.Path && field.DisplayName) {
+            return <ReferenceCell content={field} fieldName={'DisplayName'} />
+        }
+        return null
+    }
+
     constructor(props: ContentListProps<T>) {
         super(props)
         this.handleSelectAllClick = this.handleSelectAllClick.bind(this)
@@ -85,6 +108,7 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
                         return (<TableCell
                             key={field as string}
                             numeric={isNumeric}
+                            className={field as string}
                         >
                             <Tooltip title={description} >
                                 <TableSortLabel
@@ -101,10 +125,13 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
             </TableHead>
             <TableBody>
                 {this.props.items.map((item) => {
+                    const isSelected = this.props.selected.find((s) => s.Id === item.Id) ? true : false
+                    const isActive = this.props.active && this.props.active.Id === item.Id ? true : false
                     return (<TableRow
                         key={item.Id}
                         hover
-                        selected={this.props.active && this.props.active.Id === item.Id ? true : false}
+                        className={`${isActive ? 'active' : ''} ${isSelected ? 'selected' : ''}`}
+                        selected={isActive}
                         onClick={(e) => {
                             this.props.onRequestActiveItemChange && this.props.onRequestActiveItemChange(item)
                             this.props.onItemClick && this.props.onItemClick(e, item)
@@ -122,8 +149,14 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
                             />
                         </TableCell>
                         {this.props.fieldsToDisplay.map((field) => {
+                            const fieldSetting = this.props.schema.FieldSettings.find((s) => s.Name === field)
+                            const cellProps: CellProps<T, keyof T> = { ...this.props as ContentListProps<T>, field, content: item, fieldSetting, isSelected }
+
+                            const fieldComponent = this.props.fieldComponent && this.props.fieldComponent(cellProps)
+                            const defaultComponent = this.defaultFieldComponents(cellProps)
+
                             const el = {
-                                ...React.createElement(this.props.fieldComponent(field, item), this.props),
+                                ...React.createElement(fieldComponent ? this.props.fieldComponent as any : defaultComponent ? this.defaultFieldComponents : DefaultCell, cellProps),
                                 key: field as string,
                             }
                             return el
