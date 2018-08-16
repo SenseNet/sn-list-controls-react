@@ -5,7 +5,7 @@ import React = require('react')
 export interface DisplayNameCellProps<T extends GenericContent> {
     content: T
     isSelected: boolean
-    icons: string[]
+    icons: any
 }
 
 export class DisplayNameCell<T extends GenericContent> extends React.Component<DisplayNameCellProps<T>> {
