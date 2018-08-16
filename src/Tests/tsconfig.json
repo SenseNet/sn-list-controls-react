@@ -1,4 +1,5 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "strict": true,
         "composite": true,
@@ -7,6 +8,8 @@
         "./index.ts"
     ],
     "references": [
-        
+        {
+            "path": "../ContentList"
+        }
     ]
 }
