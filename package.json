@@ -1,6 +1,6 @@
 {
   "name": "@sensenet/list-controls-react",
-  "version": "1.0.0-development.4",
+  "version": "1.0.0-development.6",
   "description": "",
   "main": "dist/ContentList/index.js",
   "files": [

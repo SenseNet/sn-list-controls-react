@@ -10,9 +10,9 @@ export interface ReferenceCellProps<T extends GenericContent> {
 export class ReferenceCell<T extends GenericContent> extends React.Component<ReferenceCellProps<T>, {}> {
     public render() {
         const { content, fieldName } = this.props
-        return (<TableCell>
-                    <span>{content[fieldName]}</span>
-            </TableCell>
+        return (<TableCell padding="checkbox">
+            <span>{content[fieldName]}</span>
+        </TableCell>
         )
     }
 }

@@ -109,6 +109,7 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
                             key={field as string}
                             numeric={isNumeric}
                             className={field as string}
+                            padding="checkbox"
                         >
                             <Tooltip title={description} >
                                 <TableSortLabel

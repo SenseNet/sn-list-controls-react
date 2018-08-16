@@ -46,7 +46,7 @@ export class ActionsCell<T extends GenericContent> extends React.Component<Actio
     }
     public render() {
         const { content } = this.props
-        return (<TableCell style={styles.actionMenuButton}>
+        return (<TableCell style={styles.actionMenuButton} padding="checkbox">
             <IconButton
                 aria-label="Menu"
                 aria-owns="actionmenu"
