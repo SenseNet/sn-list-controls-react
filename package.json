@@ -10,8 +10,8 @@
   "keywords": [
     "sensenet",
     "ecm",
-    "document preview",
-    "online viewer"
+    "react",
+    "content list"
   ],
   "scripts": {
     "precommit": "npm run test",
