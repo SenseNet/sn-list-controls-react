@@ -303,6 +303,30 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
         })
     })
 
+    describe('Field with a custom field component', () => {
+        it('Should be added for referemces', () => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder'}]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Name']}
+                selected={[]}
+                orderBy="ModificationDate"
+                orderDirection="asc"
+                icons={{}}
+                fieldComponent={(props) => {
+                    if (props.field === 'Name') {
+                        return (<div className="custom-field">{props.content[props.field]}</div>)
+                    }
+                    return null
+                }}
+            />)
+            const actionsComponent = component.root.findAll((instance) => instance.props.className && instance.props.className === 'custom-field')
+            expect(actionsComponent.length).to.be.equal(1)
+
+            component.unmount()
+        })
+    })
+
     describe('Event bindings', () => {
         it('should fire onItemClick when the row is clicked', (done: MochaDone) => {
             const component = renderer.create(<ContentList<GenericContent>
