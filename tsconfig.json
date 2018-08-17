@@ -19,9 +19,9 @@
         "./src/**/*.tsx"
     ],
     "exclude": [
-        "node_modules",
-        "dist",
-        "bundle"
+        "./node_modules/**/*.*",
+        "./dist/**/*.*",
+        "./bundle/**/*.*"
     ],
     "references": [
         {
