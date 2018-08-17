@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Route, Switch } from 'react-router'
 import { HashRouter, Link } from 'react-router-dom'
 import { ContentListDemo } from './ContentListDemo'
+import { WelcomePage } from './WelcomePage'
 
 export interface ExampleAppState {
     isDrawerOpened: boolean
@@ -66,7 +67,7 @@ export class ExampleAppLayout extends React.Component<{}, ExampleAppState> {
                         <Route exact path="/contentlist" component={ContentListDemo} />
                     </Switch>
                     <Switch>
-                        <Route exact path="/" component={() => <div>Welcome</div>} />
+                        <Route exact path="/" component={() => <WelcomePage />} />
                     </Switch>
                 </div>
             </div>

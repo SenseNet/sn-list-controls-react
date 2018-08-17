@@ -1,4 +1,4 @@
-import { Checkbox, Divider, FormControlLabel, FormGroup, Paper, TableCell, TextField, Tooltip, Typography } from '@material-ui/core'
+import { Checkbox, FormControlLabel, FormGroup, Paper, TableCell, TextField, Tooltip } from '@material-ui/core'
 import { GenericContent, SchemaStore } from '@sensenet/default-content-types'
 import React = require('react')
 import { ContentList, ContentListProps } from '../ContentList'
@@ -85,11 +85,6 @@ export class ContentListDemo extends React.Component<{}, ContentListDemoState> {
 
     public render() {
         return (
-            <div style={{ padding: '2em' }}>
-                <Typography variant="headline">ContentList</Typography>
-                <Typography variant="subheading">You can display a collection of content in a grid view</Typography>
-                <Typography variant="body1">Some generic description about what and how you can use the control</Typography>
-                <Divider />
                 <Paper style={{ marginTop: '1em' }}>
                     <ContentList<GenericContent>
                         {...this.state}
@@ -102,7 +97,6 @@ export class ContentListDemo extends React.Component<{}, ContentListDemoState> {
                             <Checkbox onChange={this.handleEditToggle} checked={this.state.isEditing} title={'Toggle display name editing'} />
                         } label="Toggle edit display name" />
                     </FormGroup>
-                </Paper>
-            </div>)
+                </Paper>)
     }
 }
