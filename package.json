@@ -16,7 +16,7 @@
   "scripts": {
     "precommit": "npm run test",
     "commit": "git-cz",
-    "pretest": "tsc --build tsconfig.json",
+    "pretest": "npm run build",
     "test": "rimraf coverage && nyc mocha -p tsconfig.json ./dist/Tests/index.js",
     "check-coverage": "istanbul check-coverage ",
     "report-coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/codecov",
