@@ -1,3 +1,5 @@
+import { Icon } from '@material-ui/core'
+import {expect} from 'chai'
 import * as React from 'react'
 import * as renderer from 'react-test-renderer'
 import { DisplayNameCell } from '../../ContentList/CellTemplates/DisplayNameCell'
@@ -12,6 +14,7 @@ export const DisplayNameCellTests: Mocha.Suite = describe('DisplayNameCell compo
             content={{ Id: 123, Path: '', Name: '', Type: 'Folder' }}
             isSelected={false}
         />)
+        expect(component.root.findAllByType(Icon).length).to.be.eq(0)
         component.unmount()
     })
 
@@ -21,6 +24,7 @@ export const DisplayNameCellTests: Mocha.Suite = describe('DisplayNameCell compo
             content={{ Id: 123, Path: '', Name: '', Type: 'Folder', Icon: 'File' }}
             isSelected={false}
         />)
+        expect(component.root.findAllByType(Icon).length).to.be.eq(0)
         component.unmount()
     })
 
@@ -30,6 +34,7 @@ export const DisplayNameCellTests: Mocha.Suite = describe('DisplayNameCell compo
             content={{ Id: 123, Path: '', Name: '', Type: 'Folder', Icon: 'File' }}
             isSelected={false}
         />)
+        expect(component.root.findAllByType(Icon).length).to.be.eq(1)
         component.unmount()
     })
 })

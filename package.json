@@ -38,6 +38,8 @@
     "lines": 80,
     "exclude": [
       "dist/Tests/**/*.*",
+      "dist/Tests/**/*.*",
+      "dist/ContentList/CellTemplates/CellProps.js",
       "dist/**/index.js",
       "**/index.js"
     ],

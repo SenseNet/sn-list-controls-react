@@ -1,4 +1,5 @@
 import { GenericContent, SchemaStore } from '@sensenet/default-content-types'
+import {expect} from 'chai'
 import * as React from 'react'
 import * as renderer from 'react-test-renderer'
 import { ContentList } from '../ContentList/ContentList'
@@ -35,12 +36,30 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
         component.unmount()
     })
 
-    it('Should render with a selected content', () => {
+    it('Should render with a selected content and the corresponding class should be appear', () => {
         const component = renderer.create(<ContentList<GenericContent>
             items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
             schema={genericSchema}
             fieldsToDisplay={['DisplayName']}
             selected={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+            orderBy="DisplayName"
+            orderDirection="asc"
+            icons={{}}
+        />)
+
+        const selected = component.root.findAll((instance) => (instance.type as any).name === 'TableRow' && typeof instance.props.className === 'string' && instance.props.className.indexOf('selected') > -1)
+        expect(selected.length).to.be.equal(1)
+
+        component.unmount()
+    })
+
+    it('Should render with an active content and the corresponding class should be appear', () => {
+        const component = renderer.create(<ContentList<GenericContent>
+            items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+            schema={genericSchema}
+            fieldsToDisplay={['DisplayName', 'Type']}
+            selected={[]}
+            active={{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }}
             orderBy="DisplayName"
             orderDirection="asc"
             icons={{}}
