@@ -95,6 +95,7 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
                 <TableRow>
                     <TableCell padding="checkbox" key="selectAll" style={{ width: '30px', paddingRight: 0 }}>
                         <Checkbox
+                            className="select-all"
                             indeterminate={this.state.hasSelected && !this.state.isAllSelected}
                             checked={this.state.isAllSelected}
                             onChange={this.handleSelectAllClick}
