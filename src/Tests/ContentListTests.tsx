@@ -1,8 +1,10 @@
 import { GenericContent, SchemaStore } from '@sensenet/default-content-types'
-import {expect} from 'chai'
+import { expect } from 'chai'
 import * as React from 'react'
 import * as renderer from 'react-test-renderer'
-import {ActionsCell} from '../ContentList/CellTemplates/ActionsCell'
+import { ActionsCell } from '../ContentList/CellTemplates/ActionsCell'
+import { DateCell } from '../ContentList/CellTemplates/DateCell'
+import { ReferenceCell } from '../ContentList/CellTemplates/ReferenceCell'
 import { ContentList } from '../ContentList/ContentList'
 
 const genericSchema = SchemaStore[1]
@@ -41,7 +43,7 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
 
     })
 
-    describe('Selection', () => {
+    describe('Selection and active item changes', () => {
         it('Should render with a selected content and the corresponding class should be appear', () => {
             const component = renderer.create(<ContentList<GenericContent>
                 items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
@@ -191,12 +193,31 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
             expect(selected.length).to.be.equal(1)
             component.unmount()
         })
+
+        it('Clicking on a row should trigger an active item change, if the callback is provided', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="DisplayName"
+                orderDirection="asc"
+                icons={{}}
+                onRequestActiveItemChange={(item) => {
+                    expect(item.Id).to.be.equal(1)
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableRow' && instance.props.className && instance.props.className.indexOf('type-folder') !== -1)[0]
+            row.props.onClick()
+        })
     })
 
     describe('Actions', () => {
         it('Actions component shouldn\'t be added by if actions are selected but not expanded on the content', () => {
             const component = renderer.create(<ContentList<GenericContent>
-                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder'}]}
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
                 schema={genericSchema}
                 fieldsToDisplay={['Actions', 'Type']}
                 selected={[]}
@@ -213,7 +234,7 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
 
         it('Actions component should be added by if actions are selected and expanded on the content', () => {
             const component = renderer.create(<ContentList<GenericContent>
-                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder', Actions: []}]}
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder', Actions: [] }]}
                 schema={genericSchema}
                 fieldsToDisplay={['Actions', 'Type']}
                 selected={[]}
@@ -229,7 +250,7 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
 
         it('onRequestActionsMenu should be triggered on click if actions are expanded', (done: MochaDone) => {
             const component = renderer.create(<ContentList<GenericContent>
-                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder', Actions: []}]}
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder', Actions: [] }]}
                 schema={genericSchema}
                 fieldsToDisplay={['Actions', 'Type']}
                 selected={[]}
@@ -243,6 +264,160 @@ export const contentListTests: Mocha.Suite = describe('ContentList component', (
             />)
             const actionsComponent = component.root.findAllByType(ActionsCell)
             actionsComponent[0].props.openActionMenu()
+        })
+    })
+
+    describe('Date field', () => {
+        it('Should be added for modification date', () => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder', ModificationDate: '2018-02-03T11:11Z' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['ModificationDate']}
+                selected={[]}
+                orderBy="ModificationDate"
+                orderDirection="asc"
+                icons={{}}
+            />)
+            const actionsComponent = component.root.findAllByType(DateCell)
+            expect(actionsComponent.length).to.be.equal(1)
+
+            component.unmount()
+        })
+    })
+
+    describe('Reference field', () => {
+        it('Should be added for referemces', () => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder', CreatedBy: { Id: 3, Path: '/', Type: 'User', Name: 'Batman', DisplayName: 'Batman' } }]}
+                schema={genericSchema}
+                fieldsToDisplay={['CreatedBy']}
+                selected={[]}
+                orderBy="ModificationDate"
+                orderDirection="asc"
+                icons={{}}
+            />)
+            const actionsComponent = component.root.findAllByType(ReferenceCell)
+            expect(actionsComponent.length).to.be.equal(1)
+
+            component.unmount()
+        })
+    })
+
+    describe('Event bindings', () => {
+        it('should fire onItemClick when the row is clicked', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="DisplayName"
+                orderDirection="asc"
+                icons={{}}
+                onItemClick={(ev, item) => {
+                    expect(item.Id).to.be.equal(1)
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableRow' && instance.props.className && instance.props.className.indexOf('type-folder') !== -1)[0]
+            row.props.onClick()
+        })
+
+        it('should fire onItemDoubleClick  when the row is double-clicked', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="DisplayName"
+                orderDirection="asc"
+                icons={{}}
+                onItemDoubleClick={(ev, item) => {
+                    expect(item.Id).to.be.equal(1)
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableRow' && instance.props.className && instance.props.className.indexOf('type-folder') !== -1)[0]
+            row.props.onDoubleClick()
+        })
+
+        it('should fire onItemTap when the row is tapped', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="DisplayName"
+                orderDirection="asc"
+                icons={{}}
+                onItemTap={(ev, item) => {
+                    expect(item.Id).to.be.equal(1)
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableRow' && instance.props.className && instance.props.className.indexOf('type-folder') !== -1)[0]
+            row.props.onTouchEnd()
+        })
+
+        it('should fire onItemContextMenu  when the context menu is triggered', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="DisplayName"
+                orderDirection="asc"
+                icons={{}}
+                onItemContextMenu={(ev, item) => {
+                    expect(item.Id).to.be.equal(1)
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableRow' && instance.props.className && instance.props.className.indexOf('type-folder') !== -1)[0]
+            row.props.onContextMenu()
+        })
+
+        it('should request order change when the header is clicked', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="Type"
+                orderDirection="asc"
+                icons={{}}
+                onRequestOrderChange={(field, direction) => {
+                    expect(field).to.be.equal('DisplayName')
+                    expect(direction).to.be.equal('desc')
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableSortLabel')[0]
+            row.props.onClick()
+        })
+
+        it('should request order change and invert the direction', (done: MochaDone) => {
+            const component = renderer.create(<ContentList<GenericContent>
+                items={[{ Id: 1, Name: '1', Path: '1', DisplayName: 'A', Type: 'Folder' }]}
+                schema={genericSchema}
+                fieldsToDisplay={['DisplayName', 'Type']}
+                selected={[]}
+                orderBy="DisplayName"
+                orderDirection="desc"
+                icons={{}}
+                onRequestOrderChange={(field, direction) => {
+                    expect(field).to.be.equal('DisplayName')
+                    expect(direction).to.be.equal('asc')
+                    component.unmount()
+                    done()
+                }}
+            />)
+            const row = component.root.findAll((instance) => (instance.type as any).name === 'TableSortLabel')[0]
+            row.props.onClick()
         })
     })
 })
