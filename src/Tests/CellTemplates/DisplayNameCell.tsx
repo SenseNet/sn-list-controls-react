@@ -37,4 +37,13 @@ export const DisplayNameCellTests: Mocha.Suite = describe('DisplayNameCell compo
         expect(component.root.findAllByType(Icon).length).to.be.eq(1)
         component.unmount()
     })
+    it('Should render without crashing when icon is office related', () => {
+        const component = renderer.create(<DisplayNameCell
+            icons={{}}
+            content={{ Id: 123, Path: '', Name: '', Type: 'Folder', Icon: 'word' }}
+            isSelected={false}
+        />)
+        expect(component.root.findAllByType(Icon).length).to.be.eq(0)
+        component.unmount()
+    })
 })
