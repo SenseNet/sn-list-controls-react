@@ -128,7 +128,7 @@ export class ContentList<T extends GenericContent> extends React.Component<Conte
     }
 
     public handleContentSelection(content: T) {
-        const selected = this.props.selected ? this.props.selected : []
+        const selected = this.props.selected !== undefined && this.props.selected.length > 0 ? this.props.selected : []
         if (this.props.onRequestSelectionChange) {
             if (selected.find((c) => c.Id === content.Id)) {
                 this.props.onRequestSelectionChange(selected.filter((s) => s.Id !== content.Id))
