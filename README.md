@@ -3,6 +3,11 @@
 
 
 # sn-list-controls-react
+
+------
+### This package is not under active development. You can find our latest packages in the [sensenset/sn-client](https://github.com/sensenet/sn-client) monorepo.
+------
+
 React controls for sensenet lists
 
 ## Installation and usage
